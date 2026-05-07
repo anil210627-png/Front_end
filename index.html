@@ -3,137 +3,276 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KVS ML Web App</title>
+
+<title>KVS ML Web Application</title>
+
 <style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
 body{
     font-family: Arial, Helvetica, sans-serif;
-    background: linear-gradient(135deg,#f5f7fa,#c3cfe2);
-    margin:0;
+    background: linear-gradient(135deg,#eef2f7,#d9e4f5);
+    min-height:100vh;
 }
+
+/* Header */
+
 .header{
     display:flex;
     align-items:center;
     background:#7a0019;
     color:white;
-    padding:15px 20px;
+    padding:15px 25px;
+    box-shadow:0 3px 8px rgba(0,0,0,0.2);
 }
+
 .logo{
-    width:60px;
-    height:60px;
+    width:65px;
+    height:65px;
     margin-right:15px;
 }
+
 .title{
-    font-size:24px;
+    font-size:26px;
     font-weight:bold;
 }
+
+/* Main Container */
+
 .container{
-    max-width:700px;
-    margin:40px auto;
+    max-width:750px;
+    margin:50px auto;
     background:white;
-    padding:30px;
-    border-radius:10px;
-    box-shadow:0 4px 10px rgba(0,0,0,0.15);
+    padding:35px;
+    border-radius:14px;
+    box-shadow:0 5px 20px rgba(0,0,0,0.15);
 }
-input, textarea, button{
+
+.container h2{
+    color:#7a0019;
+    margin-bottom:20px;
+    text-align:center;
+}
+
+label{
+    display:block;
+    margin-top:15px;
+    font-weight:bold;
+    color:#333;
+}
+
+textarea,
+input{
     width:100%;
-    padding:10px;
-    margin-top:10px;
-    border-radius:6px;
+    padding:12px;
+    margin-top:8px;
+    border-radius:8px;
     border:1px solid #ccc;
-    font-size:14px;
+    font-size:15px;
 }
+
+textarea{
+    resize:vertical;
+}
+
 button{
+    width:100%;
+    padding:14px;
+    margin-top:25px;
     background:#7a0019;
     color:white;
     border:none;
-    cursor:pointer;
+    border-radius:8px;
+    font-size:16px;
     font-weight:bold;
+    cursor:pointer;
+    transition:0.3s;
 }
+
 button:hover{
     background:#a00022;
 }
+
 .result{
-    margin-top:20px;
-    padding:15px;
-    background:#f1f3f6;
+    margin-top:25px;
+    padding:18px;
+    background:#f4f6fa;
+    border-left:6px solid #7a0019;
     border-radius:8px;
-    font-weight:bold;
+    min-height:60px;
+    font-size:16px;
+    color:#222;
+    word-wrap:break-word;
 }
+
 .footer{
     text-align:center;
-    margin-top:30px;
+    margin:30px 0;
     color:#555;
-    font-size:13px;
+    font-size:14px;
 }
+
+.loading{
+    color:#0d47a1;
+    font-weight:bold;
+}
+
+.success{
+    color:green;
+    font-weight:bold;
+}
+
+.error{
+    color:red;
+    font-weight:bold;
+}
+
 </style>
 </head>
 
 <body>
 
+<!-- HEADER -->
+
 <div class="header">
-<svg class="logo" viewBox="0 0 100 100">
-<circle cx="50" cy="50" r="45" fill="#ffcc00" stroke="#ffffff" stroke-width="5"/>
-<text x="50%" y="55%" text-anchor="middle" font-size="28" fill="#7a0019" font-weight="bold" font-family="Arial">KVS</text>
-</svg>
-<div class="title">Kendriya Vidyalaya Sangathan – ML Web Application</div>
+
+    <!-- Simple SVG KVS Logo -->
+    <svg class="logo" viewBox="0 0 100 100">
+        <circle cx="50" cy="50" r="45" fill="#ffcc00" stroke="#ffffff" stroke-width="5"/>
+        <text x="50%" y="57%" text-anchor="middle"
+        font-size="28"
+        fill="#7a0019"
+        font-weight="bold"
+        font-family="Arial">
+        KVS
+        </text>
+    </svg>
+
+    <div class="title">
+        Kendriya Vidyalaya Sangathan – ML Web Application
+    </div>
+
 </div>
+
+<!-- MAIN CONTENT -->
 
 <div class="container">
 
-<h3>Enter Input for Prediction</h3>
+    <h2>Prediction Input Form</h2>
 
-<label>Enter Text / Values</label>
-<textarea id="textInput" rows="4" placeholder="Enter values or text here..."></textarea>
+    <label>Enter Text / Values</label>
 
-<label>Or Upload File</label>
-<input type="file" id="fileInput">
+    <textarea
+        id="textInput"
+        rows="5"
+        placeholder="Enter text, marks, values, or any prediction input..."
+    ></textarea>
 
-<button onclick="sendData()">Get Prediction</button>
+    <button onclick="sendData()">
+        Get Prediction
+    </button>
 
-<div class="result" id="resultBox">
-Prediction result will appear here.
-</div>
+    <div class="result" id="resultBox">
+        Prediction result will appear here.
+    </div>
 
 </div>
 
 <div class="footer">
-Developed for Kendriya Vidyalaya Sangathan ML Application
+    Developed for Kendriya Vidyalaya Sangathan ML Application
 </div>
 
+<!-- SCRIPT -->
+
 <script>
+
 async function sendData(){
 
-const text = document.getElementById("textInput").value;
-const fileInput = document.getElementById("fileInput");
-const resultBox = document.getElementById("resultBox");
+    const text =
+    document.getElementById("textInput").value;
 
-let formData = new FormData();
+    const resultBox =
+    document.getElementById("resultBox");
 
-if(text){
-formData.append("text", text);
+    // Validation
+
+    if(text.trim() === ""){
+
+        resultBox.innerHTML =
+        "<span class='error'>Please enter some input.</span>";
+
+        return;
+    }
+
+    // Loading message
+
+    resultBox.innerHTML =
+    "<span class='loading'>Processing prediction...</span>";
+
+    try{
+
+        // IMPORTANT:
+        // Replace YOUR-RENDER-URL with your actual Render backend URL
+
+        const response = await fetch(
+        "https://YOUR-RENDER-URL.onrender.com/predict",
+        {
+            method:"POST",
+
+            headers:{
+                "Content-Type":"application/json"
+            },
+
+            body: JSON.stringify({
+                text:text
+            })
+        });
+
+        // Check response
+
+        if(!response.ok){
+            throw new Error("Server error");
+        }
+
+        const data = await response.json();
+
+        // Display result nicely
+
+        resultBox.innerHTML = `
+            <span class="success">
+                Prediction Successful ✅
+            </span>
+
+            <br><br>
+
+            <b>Server Response:</b>
+
+            <br><br>
+
+            <pre>${JSON.stringify(data,null,2)}</pre>
+        `;
+
+    }
+    catch(error){
+
+        resultBox.innerHTML = `
+            <span class="error">
+                Error connecting to API ❌
+            </span>
+
+            <br><br>
+
+            ${error.message}
+        `;
+    }
+
 }
 
-if(fileInput.files.length > 0){
-formData.append("file", fileInput.files[0]);
-}
-
-resultBox.innerHTML = "Processing prediction...";
-
-try{
-
-const response = await fetch("https://your-backend.onrender.com/predict",{
-method:"POST",
-body:formData
-});
-
-const data = await response.json();
-
-resultBox.innerHTML = "Prediction Result:<br><br>" + JSON.stringify(data);
-
-}catch(error){
-resultBox.innerHTML = "Error connecting to API.";
-}
-}
 </script>
 
 </body>
